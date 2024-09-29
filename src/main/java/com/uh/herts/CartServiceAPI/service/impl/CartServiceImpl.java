@@ -48,8 +48,6 @@ public class CartServiceImpl implements CartService {
         return CartMapper.toCartDTO(cart);
     }
 
-//    @Transactional
-//    @Override
     public CartDTO addItemToCartV1(int userId, CartItemDTO cartItemDTO) {
         Cart cart = cartRepository.findByUser_UserId(userId)
                 .orElseGet(() -> createNewCart(userId));
@@ -79,17 +77,14 @@ public class CartServiceImpl implements CartService {
     public void clearCart(int userId) {
         Cart cart = cartRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart", "user_id",String.valueOf(userId)));
-//        cart.getCartItems().clear();
-//        cartRepository.save(cart);
-        // Delete the cart entirely
+
         cartRepository.delete(cart);
     }
 
     @Transactional
     @Override
     public CartDTO addItemToCart(int userId, CartItemDTO cartItemDTO) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-//        User user = restTemplate.getForObject("http://user-service/api/users/" + userId, User.class);
+
         User user = restTemplate.getForObject("http://13.40.219.97:8084/api/users/" + userId, User.class);
 
         if (user == null) {
@@ -145,12 +140,7 @@ public class CartServiceImpl implements CartService {
 
         return cartItemDTO;
     }
-   /* private Cart createNewCart(int userId) {
 
-        Cart cart = new Cart();
-        cart.setUser(new User(userId));  // Assuming a User constructor that accepts userId
-        return cartRepository.save(cart);
-    }*/
    private Cart createNewCart(int userId) {
        // Call the User Service to get user details
        String userServiceUrl = "http://13.40.219.97:8084/api/users/" + userId;
